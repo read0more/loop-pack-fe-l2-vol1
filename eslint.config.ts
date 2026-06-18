@@ -24,6 +24,7 @@ export default defineConfig([
       pluginReact.configs.flat["jsx-runtime"],
       reactHooks.configs.flat.recommended,
     ],
+    settings: { react: { version: "19.2" } },
     rules: {
       "react-hooks/exhaustive-deps": "error",
     },
