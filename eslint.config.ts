@@ -10,6 +10,7 @@ import customLint from "./customLint.ts";
 
 export default defineConfig([
   { ignores: ["dist"] },
+  { linterOptions: { noInlineConfig: true } },
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     plugins: { js, customLint },
@@ -17,6 +18,15 @@ export default defineConfig([
     languageOptions: { globals: globals.browser },
   },
   ...tseslint.configs.recommended,
+  {
+    files: ["**/*.{ts,mts,cts,tsx}"],
+    rules: {
+      "@typescript-eslint/consistent-type-assertions": [
+        "error",
+        { assertionStyle: "never" },
+      ],
+    },
+  },
   {
     files: ["**/*.{jsx,tsx}"],
     extends: [
