@@ -5,15 +5,14 @@ import type { Address } from "../types";
 // 단, 실제 선택 동작(onSelectAddress)은 AddressForm → AddressField 로 통과시킨다.
 export default function DeliverySection({
   addresses,
-  selectedAddressId,
+  selectedAddress,
   onSelectAddress,
 }: {
   addresses: Address[];
-  selectedAddressId: string;
-  onSelectAddress: (id: string) => void;
+  selectedAddress: Address;
+  onSelectAddress: (address: Address) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const selected = addresses.find((a) => a.id === selectedAddressId)!;
 
   return (
     <div className="section">
@@ -26,12 +25,13 @@ export default function DeliverySection({
       {expanded ? (
         <AddressForm
           addresses={addresses}
-          selectedAddressId={selectedAddressId}
+          selectedAddress={selectedAddress}
           onSelectAddress={onSelectAddress}
         />
       ) : (
         <p className="addr-summary">
-          {selected.label} · {selected.recipient} ({selected.detail})
+          {selectedAddress.label} · {selectedAddress.recipient} (
+          {selectedAddress.detail})
         </p>
       )}
     </div>
@@ -42,15 +42,17 @@ export default function DeliverySection({
 // 선택 동작(onSelectAddress)은 그대로 AddressField 로 통과시킨다.
 function AddressForm({
   addresses,
-  selectedAddressId,
+  selectedAddress,
   onSelectAddress,
 }: {
   addresses: Address[];
-  selectedAddressId: string;
-  onSelectAddress: (id: string) => void;
+  selectedAddress: Address;
+  onSelectAddress: (address: Address) => void;
 }) {
   const [onlyNear, setOnlyNear] = useState(false);
-  const list = onlyNear ? addresses.filter((a) => !a.isRemote) : addresses;
+  const nonRemoteAddresses = onlyNear
+    ? addresses.filter((a) => !a.isRemote)
+    : addresses;
   return (
     <>
       <label className="filter">
@@ -61,11 +63,11 @@ function AddressForm({
         />
         도서산간 제외
       </label>
-      {list.map((a) => (
+      {nonRemoteAddresses.map((a) => (
         <AddressField
           key={a.id}
           address={a}
-          selected={a.id === selectedAddressId}
+          selected={a.id === selectedAddress.id}
           onSelect={onSelectAddress}
         />
       ))}
@@ -80,14 +82,14 @@ function AddressField({
 }: {
   address: Address;
   selected: boolean;
-  onSelect: (id: string) => void;
+  onSelect: (address: Address) => void;
 }) {
   return (
     <label className="addr">
       <input
         type="radio"
         checked={selected}
-        onChange={() => onSelect(address.id)}
+        onChange={() => onSelect(address)}
       />
       <span>
         {address.label} · {address.recipient} ({address.detail})

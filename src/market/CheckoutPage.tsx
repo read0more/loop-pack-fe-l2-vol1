@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Coupon, PaymentMethod, PaymentAmounts } from "./types";
+import type { Coupon, PaymentMethod, PaymentAmounts, Address } from "./types";
 import { ADDRESSES, CART, MEMBER, PAST_ORDERS } from "./data";
 import {
   calculateItemTotal,
@@ -25,19 +25,17 @@ export function CheckoutPage() {
   const member = MEMBER;
   const cart = CART;
 
-  const [selectedAddressId, setSelectedAddressId] = useState(ADDRESSES[0].id);
+  const [selectedAddress, setSelectedAddress] = useState<Address>(ADDRESSES[0]);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [pointInput, setPointInput] = useState(0);
   const [payment, setPayment] = useState<PaymentMethod>("card");
   const [agreed, setAgreed] = useState(false);
   const [placed, setPlaced] = useState(false);
 
-  const address = ADDRESSES.find((a) => a.id === selectedAddressId)!;
-
   const itemTotal = calculateItemTotal(cart);
   const amounts: PaymentAmounts = {
     itemTotal,
-    shippingFee: calculateShippingFee(itemTotal, address.isRemote),
+    shippingFee: calculateShippingFee(itemTotal, selectedAddress.isRemote),
     couponDiscount: calculateCouponDiscount(appliedCoupon),
     pointDiscount: calculatePointDiscount(pointInput, member.point, itemTotal),
   };
@@ -59,8 +57,8 @@ export function CheckoutPage() {
 
       <DeliverySection
         addresses={ADDRESSES}
-        selectedAddressId={selectedAddressId}
-        onSelectAddress={setSelectedAddressId}
+        selectedAddress={selectedAddress}
+        onSelectAddress={setSelectedAddress}
       />
 
       <DeliveryMemoSection />
