@@ -49,17 +49,33 @@ function AddressForm({
   selectedAddress: Address;
   onSelectAddress: (address: Address) => void;
 }) {
-  const [onlyNear, setOnlyNear] = useState(false);
-  const nonRemoteAddresses = onlyNear
+  const [shouldExcludeRemote, setShouldExcludeRemote] = useState(false);
+  const nonRemoteAddresses = shouldExcludeRemote
     ? addresses.filter((a) => !a.isRemote)
     : addresses;
+
+  // 도서산간을 제외하면 선택돼 있던 도서산간 배송지가 목록에서 사라진다.
+  // 사라진 선택이 그대로 남지 않도록 첫 일반 배송지로 옮겨준다.
+  const handleExcludeRemoteToggle = (checked: boolean) => {
+    setShouldExcludeRemote(checked);
+
+    if (!checked) return;
+    if (!selectedAddress.isRemote) return;
+
+    const firstNonRemoteAddress = addresses.find((a) => !a.isRemote);
+
+    if (firstNonRemoteAddress) {
+      onSelectAddress(firstNonRemoteAddress);
+    }
+  };
+
   return (
     <>
       <label className="filter">
         <input
           type="checkbox"
-          checked={onlyNear}
-          onChange={(e) => setOnlyNear(e.target.checked)}
+          checked={shouldExcludeRemote}
+          onChange={(e) => handleExcludeRemoteToggle(e.target.checked)}
         />
         도서산간 제외
       </label>
