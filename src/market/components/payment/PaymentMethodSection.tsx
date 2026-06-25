@@ -1,4 +1,4 @@
-import type { PaymentMethod } from "../types";
+import type { PaymentMethod } from "@/market/types";
 
 const PAYMENT_LABEL: Record<PaymentMethod, string> = {
   card: "신용/체크카드",

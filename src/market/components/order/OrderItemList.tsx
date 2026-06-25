@@ -1,5 +1,5 @@
-import type { CartItem } from "../types";
-import { OrderLineRow } from "./OrderLineRow";
+import type { CartItem } from "@/market/types";
+import { OrderLineRow } from "../shared/OrderLineRow";
 
 export default function OrderItemList({ items }: { items: CartItem[] }) {
   return (

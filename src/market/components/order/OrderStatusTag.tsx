@@ -1,4 +1,4 @@
-import type { OrderStatus } from "../types";
+import type { OrderStatus } from "@/market/types";
 
 const STATUS_TAG: Record<OrderStatus, { label: string; color: string }> = {
   paid: { label: "결제완료", color: "#3b82f6" },

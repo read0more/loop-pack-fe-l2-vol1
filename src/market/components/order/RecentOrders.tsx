@@ -1,4 +1,4 @@
-import type { PastOrder } from "../types";
+import type { PastOrder } from "@/market/types";
 import { OrderStatusTag } from "./OrderStatusTag";
 
 export default function RecentOrders({ orders }: { orders: PastOrder[] }) {

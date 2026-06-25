@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { Coupon } from "../types";
-import { COUPONS } from "../data";
+import type { Coupon } from "@/market/types";
+import { COUPONS } from "@/market/data";
 
 export default function CouponSection({
   appliedCoupon,

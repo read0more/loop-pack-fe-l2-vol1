@@ -10,17 +10,17 @@ import {
   calculateFinalPrice,
 } from "../utils";
 import "./market.css";
-import OrderComplete from "./components/OrderComplete";
-import DeliverySection from "./components/DeliverySection";
-import DeliveryMemoSection from "./components/DeliveryMemoSection";
-import OrderItemList from "./components/OrderItemList";
-import CouponSection from "./components/CouponSection";
-import PointSection from "./components/PointSection";
-import PaymentMethodSection from "./components/PaymentMethodSection";
-import PaymentSummary from "./components/PaymentSummary";
-import TermsAgreement from "./components/TermsAgreement";
-import PlaceOrderButton from "./components/PlaceOrderButton";
-import RecentOrders from "./components/RecentOrders";
+import OrderComplete from "./components/order/OrderComplete";
+import DeliverySection from "./components/delivery/DeliverySection";
+import DeliveryMemoSection from "./components/delivery/DeliveryMemoSection";
+import OrderItemList from "./components/order/OrderItemList";
+import CouponSection from "./components/benefit/CouponSection";
+import PointSection from "./components/benefit/PointSection";
+import PaymentMethodSection from "./components/payment/PaymentMethodSection";
+import PaymentSummary from "./components/payment/PaymentSummary";
+import TermsAgreement from "./components/terms/TermsAgreement";
+import PlaceOrderButton from "./components/payment/PlaceOrderButton";
+import RecentOrders from "./components/order/RecentOrders";
 
 export function CheckoutPage() {
   const member = MEMBER;

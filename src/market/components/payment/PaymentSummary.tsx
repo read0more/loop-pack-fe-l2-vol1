@@ -1,6 +1,6 @@
-import type { Coupon, PaymentAmounts } from "../types";
-import { Price } from "./Price";
-import { OrderLineRow } from "./OrderLineRow";
+import type { Coupon, PaymentAmounts } from "@/market/types";
+import { Price } from "../shared/Price";
+import { OrderLineRow } from "../shared/OrderLineRow";
 
 export default function PaymentSummary({
   amounts,
