@@ -17,7 +17,7 @@ export default function PointSection({
   };
 
   const handleChangePointInput = (points: number) => {
-    onChangePointInput(usePoint ? points : 0);
+    onChangePointInput(usePoint ? Math.min(memberPoint, points) : 0);
   };
 
   return (
@@ -34,6 +34,7 @@ export default function PointSection({
       {usePoint ? (
         <input
           type="number"
+          min={0}
           value={pointInput}
           onChange={(e) => handleChangePointInput(Number(e.target.value))}
         />
