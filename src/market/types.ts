@@ -28,6 +28,7 @@ export type PaymentAmounts = {
   shippingFee: number;
   couponDiscount: number;
   pointDiscount: number;
+  memberDiscount: number;
 };
 
 export type Member = {

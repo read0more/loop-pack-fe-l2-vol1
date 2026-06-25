@@ -3,7 +3,7 @@ import type { CartItem, Coupon, Member, PaymentAmounts } from "../market/types";
 const FREE_SHIPPING_THRESHOLD = 50000;
 const BASE_SHIPPING_FEE = 3000;
 const REMOTE_SHIPPING_SURCHARGE = 3000;
-const VIP_PRICE_MULTIPLIER = 0.9;
+const VIP_DISCOUNT_RATE = 0.1;
 
 export function calculateItemTotal(cart: CartItem[]): number {
   return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -30,19 +30,27 @@ export function calculatePointDiscount(
   return Math.min(pointInput, memberPoint, itemTotal);
 }
 
-export function calculateMemberPrice(amount: number, member?: Member): number {
-  return member?.grade === "VIP"
-    ? Math.round(amount * VIP_PRICE_MULTIPLIER)
-    : amount;
-}
-
-export function calculateFinalPrice(
-  amounts: PaymentAmounts,
+// VIP 할인은 상품 금액(itemTotal)에만 적용한다.
+// 배송비·쿠폰·적립금에는 적용하지 않는다.
+export function calculateMemberDiscount(
+  itemTotal: number,
   member?: Member,
 ): number {
-  const { itemTotal, shippingFee, couponDiscount, pointDiscount } = amounts;
-  const priceBeforeMembership =
-    itemTotal + shippingFee - couponDiscount - pointDiscount;
+  return member?.grade === "VIP"
+    ? Math.floor(itemTotal * VIP_DISCOUNT_RATE)
+    : 0;
+}
 
-  return calculateMemberPrice(priceBeforeMembership, member);
+export function calculateFinalPrice(amounts: PaymentAmounts): number {
+  const {
+    itemTotal,
+    shippingFee,
+    couponDiscount,
+    pointDiscount,
+    memberDiscount,
+  } = amounts;
+
+  return (
+    itemTotal + shippingFee - couponDiscount - pointDiscount - memberDiscount
+  );
 }

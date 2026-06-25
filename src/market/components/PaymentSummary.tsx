@@ -11,7 +11,13 @@ export default function PaymentSummary({
   finalPrice: number;
   appliedCoupon: Coupon | null;
 }) {
-  const { itemTotal, shippingFee, couponDiscount, pointDiscount } = amounts;
+  const {
+    itemTotal,
+    shippingFee,
+    couponDiscount,
+    pointDiscount,
+    memberDiscount,
+  } = amounts;
 
   return (
     <div className="section">
@@ -22,6 +28,11 @@ export default function PaymentSummary({
       <OrderLineRow amount={shippingFee}>
         <span>배송비</span>
       </OrderLineRow>
+      {memberDiscount > 0 ? (
+        <OrderLineRow amount={memberDiscount} isDiscount>
+          <span>회원 할인 (VIP 10%)</span>
+        </OrderLineRow>
+      ) : null}
       {appliedCoupon ? (
         <OrderLineRow amount={couponDiscount} isDiscount>
           <span>쿠폰 할인</span>

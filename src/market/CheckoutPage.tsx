@@ -6,6 +6,7 @@ import {
   calculateShippingFee,
   calculateCouponDiscount,
   calculatePointDiscount,
+  calculateMemberDiscount,
   calculateFinalPrice,
 } from "../utils";
 import "./market.css";
@@ -38,9 +39,10 @@ export function CheckoutPage() {
     shippingFee: calculateShippingFee(itemTotal, selectedAddress.isRemote),
     couponDiscount: calculateCouponDiscount(appliedCoupon),
     pointDiscount: calculatePointDiscount(pointInput, member.point, itemTotal),
+    memberDiscount: calculateMemberDiscount(itemTotal, member),
   };
 
-  const finalPrice = calculateFinalPrice(amounts, member);
+  const finalPrice = calculateFinalPrice(amounts);
 
   if (placed) {
     return (
