@@ -81,7 +81,8 @@ export function ProductListPage() {
     handleResetFilters,
   } = useProductFilters();
 
-  const { products, totalCount, isLoading, error } = useProducts(query);
+  const { products, totalCount, isLoading, isFetching, error } =
+    useProducts(query);
   const { wishlist, isWished, toggleWishlist } = useWishlist();
   const { addRecentlyViewed } = useRecentlyViewed();
 
@@ -144,7 +145,9 @@ export function ProductListPage() {
   const visibleProducts = getVisibleProducts(products, filters.inStockOnly);
   const totalPages = getTotalPages(totalCount, PAGE_SIZE);
 
-  if (isLoading && products.length === 0) {
+  // 최초 로드(데이터 없음)에서만 전체화면 로딩. 재검색 중에는 keepPreviousData 로
+  // 목록·검색창이 유지돼 입력 포커스를 잃지 않는다.
+  if (isLoading) {
     return <div className="loading">로딩 중...</div>;
   }
 
@@ -376,7 +379,7 @@ export function ProductListPage() {
         />
       )}
 
-      {isLoading && products.length > 0 && (
+      {isFetching && (
         <div className="background-loading">데이터 갱신 중...</div>
       )}
     </div>
