@@ -88,7 +88,6 @@ export function ProductListPage() {
 
   useSyncFiltersToUrl(filters);
 
-  // 페이지가 바뀌면 스크롤을 맨 위로 (브라우저 DOM 동기화)
   useEffect(() => {
     const fetchProducts = async () => {
       setIsLoading(true);
@@ -141,7 +140,6 @@ export function ProductListPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [filters.page]);
 
-  // 파생값 — state 가 아니라 렌더 중 계산
   const visibleProducts = getVisibleProducts(products, filters.inStockOnly);
   const totalPages = getTotalPages(totalCount, PAGE_SIZE);
 
