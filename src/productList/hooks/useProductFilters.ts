@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { isSortBy, isViewMode } from "../constants";
 import type { CategoryFilter, ProductFilters, ProductQuery } from "../types";
-import { parseFiltersFromUrl } from "../utils";
+import { isSortBy, isViewMode, parseFiltersFromUrl } from "../utils";
 import { useDebouncedValue } from "./useDebouncedValue";
 
 const SEARCH_DEBOUNCE_MS = 300;

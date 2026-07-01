@@ -1,4 +1,4 @@
-import type { CategoryFilter, SortBy, ViewMode } from "./types";
+import type { CategoryFilter, SortBy } from "./types";
 
 export const CATEGORIES: { value: CategoryFilter; label: string }[] = [
   { value: "all", label: "전체" },
@@ -16,12 +16,3 @@ export const SORT_OPTIONS: { value: SortBy; label: string }[] = [
 ];
 
 export const PAGE_SIZE = 12;
-
-export const isCategory = (value: string): value is CategoryFilter =>
-  CATEGORIES.some((opt) => opt.value === value);
-
-export const isSortBy = (value: string): value is SortBy =>
-  SORT_OPTIONS.some((opt) => opt.value === value);
-
-export const isViewMode = (value: string): value is ViewMode =>
-  value === "grid" || value === "list";

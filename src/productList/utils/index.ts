@@ -1,10 +1,22 @@
-import { isCategory, isSortBy } from "../constants";
+import { CATEGORIES, SORT_OPTIONS } from "../constants";
 import type {
+  CategoryFilter,
   HighlightPart,
   Product,
   ProductBadges,
   ProductFilters,
+  SortBy,
+  ViewMode,
 } from "../types";
+
+export const isCategory = (value: string): value is CategoryFilter =>
+  CATEGORIES.some((opt) => opt.value === value);
+
+export const isSortBy = (value: string): value is SortBy =>
+  SORT_OPTIONS.some((opt) => opt.value === value);
+
+export const isViewMode = (value: string): value is ViewMode =>
+  value === "grid" || value === "list";
 
 // ─── 도메인 규칙 임계값 ──────────────────────────────────
 const HOT_DEAL_MIN_DISCOUNT_RATE = 30;
