@@ -122,14 +122,15 @@ describe("ProductListPage — URL 쿼리에서 필터·검색·페이지 상태 
     // 로딩이 끝나 컨트롤이 DOM 에 등장할 때까지 대기.
     const input = await screen.findByRole<HTMLInputElement>("searchbox");
 
-    // (a) 서버로 가는 첫 요청부터 복원된 조건(카테고리·정렬·검색어·페이지)이 실려나간다.
+    // (a) 서버로 가는 첫 요청부터 복원된 조건(카테고리·정렬·검색어·페이지·재고)이 실려나간다.
     const firstRequestUrl = fetchMock.mock.calls[0][0];
     expect(firstRequestUrl).toContain("category=fashion");
     expect(firstRequestUrl).toContain("sort=price-asc");
     expect(firstRequestUrl).toContain("q=coat");
     expect(firstRequestUrl).toContain("page=2");
+    expect(firstRequestUrl).toContain("inStock=true");
 
-    // (b) 컨트롤도 복원된 상태를 보여준다 — 검색어(서버 조건)와 재고 토글(클라이언트 전용).
+    // (b) 컨트롤도 복원된 상태를 보여준다 — 검색어와 재고 토글(둘 다 서버 조건).
     expect(input.value).toBe("coat");
     const inStockCheckbox = screen.getByRole<HTMLInputElement>("checkbox");
     expect(inStockCheckbox.checked).toBe(true);

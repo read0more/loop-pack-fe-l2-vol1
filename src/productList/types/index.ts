@@ -48,7 +48,7 @@ export type FilterAction =
   | { type: "setPage"; value: number }
   | { type: "reset" };
 
-/** 서버로 보내는 조회 조건 — inStockOnly·viewMode 같은 클라이언트 전용 값은 제외. */
+/** 서버로 보내는 조회 조건 — viewMode 같은 순수 표시 옵션은 제외. */
 export type ProductQuery = {
   category: CategoryFilter;
   minPrice: number | "";
@@ -56,6 +56,7 @@ export type ProductQuery = {
   sortBy: SortBy;
   searchQuery: string;
   page: number;
+  inStockOnly: boolean;
 };
 
 /** 상품 카드에 표시할 배지/상태를 한 번에 계산한 뷰모델. */

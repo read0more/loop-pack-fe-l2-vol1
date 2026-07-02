@@ -13,6 +13,7 @@ export function buildProductSearchParams(query: ProductQuery): URLSearchParams {
 
   if (query.minPrice !== "") params.set("minPrice", String(query.minPrice));
   if (query.maxPrice !== "") params.set("maxPrice", String(query.maxPrice));
+  if (query.inStockOnly) params.set("inStock", "true");
 
   return params;
 }

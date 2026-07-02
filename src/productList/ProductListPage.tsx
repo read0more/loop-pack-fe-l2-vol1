@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import "./ProductListPage.css";
 import { PAGE_SIZE } from "./constants";
-import { getTotalPages, getVisibleProducts } from "./utils";
+import { getTotalPages } from "./utils";
 import { useProductFilters } from "./hooks/useProductFilters";
 import { useProducts } from "./hooks/useProducts";
 import { useWishlist } from "./hooks/useWishlist";
@@ -47,7 +47,6 @@ export function ProductListPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [filters.page]);
 
-  const visibleProducts = getVisibleProducts(products, filters.inStockOnly);
   const totalPages = getTotalPages(totalCount, PAGE_SIZE);
 
   // 최초 로드(데이터 없음)에서만 전체화면 로딩. 재검색 중에는 keepPreviousData 로
@@ -97,11 +96,8 @@ export function ProductListPage() {
         />
       </SearchSortBar>
 
-      <ProductGrid
-        viewMode={filters.viewMode}
-        isEmpty={visibleProducts.length === 0}
-      >
-        {visibleProducts.map((product) => (
+      <ProductGrid viewMode={filters.viewMode} isEmpty={products.length === 0}>
+        {products.map((product) => (
           <ProductCard
             key={product.id}
             product={product}

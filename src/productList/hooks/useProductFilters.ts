@@ -102,7 +102,7 @@ export function useProductFilters() {
     SEARCH_DEBOUNCE_MS,
   );
 
-  // 서버로 보낼 조회 조건 — inStockOnly·viewMode 같은 클라이언트 전용 값은 뺀다.
+  // 서버로 보낼 조회 조건 — viewMode 같은 순수 표시 옵션만 뺀다.
   const query: ProductQuery = {
     category: state.category,
     minPrice: debouncedMinPrice,
@@ -110,6 +110,7 @@ export function useProductFilters() {
     sortBy: state.sortBy,
     searchQuery: debouncedSearchQuery,
     page: state.page,
+    inStockOnly: state.inStockOnly,
   };
 
   return {

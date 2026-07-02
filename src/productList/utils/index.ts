@@ -111,14 +111,6 @@ export function getProductBadges(
   };
 }
 
-/** 재고 있는 것만 보기 토글에 따라 보여줄 상품을 추린다(파생값 — state 아님). */
-export function getVisibleProducts(
-  products: Product[],
-  inStockOnly: boolean,
-): Product[] {
-  return inStockOnly ? products.filter((p) => p.stock > 0) : products;
-}
-
 /** 전체 개수와 페이지 크기로 총 페이지 수를 계산한다(최소 1). */
 export function getTotalPages(totalCount: number, pageSize: number): number {
   return Math.max(1, Math.ceil(totalCount / pageSize));
