@@ -2,13 +2,18 @@ import { CATEGORIES, SORT_OPTIONS } from "../constants";
 import type {
   CategoryFilter,
   FilterState,
-  HighlightPart,
   Product,
   ProductBadges,
   ProductFilters,
   SortBy,
   ViewMode,
 } from "../types";
+
+/** 검색어 하이라이트를 위해 텍스트를 쪼갠 한 조각(일치 여부 포함). */
+export type HighlightPart = {
+  text: string;
+  isMatch: boolean;
+};
 
 export const isCategory = (value: string): value is CategoryFilter =>
   CATEGORIES.some((opt) => opt.value === value);

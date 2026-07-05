@@ -1,10 +1,23 @@
 import { useEffect, useReducer, useState } from "react";
 import type {
-  FilterAction,
+  CategoryFilter,
   FilterState,
   ProductFilters,
   ProductQuery,
+  SortBy,
 } from "../types";
+
+/** useProductFilters reducer 가 처리하는 액션. */
+type FilterAction =
+  | { type: "setCategory"; value: CategoryFilter }
+  | { type: "setMinPrice"; value: number | "" }
+  | { type: "setMaxPrice"; value: number | "" }
+  | { type: "setSortBy"; value: SortBy }
+  | { type: "setSearchQuery"; value: string }
+  | { type: "setInStockOnly"; value: boolean }
+  | { type: "setPage"; value: number }
+  | { type: "restoreFromUrl"; value: FilterState }
+  | { type: "reset" };
 import {
   buildFilterSearch,
   isSortBy,

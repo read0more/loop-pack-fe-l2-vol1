@@ -1,5 +1,10 @@
 import { PAGE_SIZE } from "../constants";
-import type { ProductListResponse, ProductQuery } from "../types";
+import type { Product, ProductQuery } from "../types";
+
+type ProductListResponse = {
+  products: Product[];
+  totalCount: number;
+};
 
 /** 서버 조회 조건을 `/api/products` 요청용 쿼리 파라미터로 변환한다. */
 export function buildProductSearchParams(query: ProductQuery): URLSearchParams {

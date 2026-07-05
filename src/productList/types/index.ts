@@ -11,11 +11,6 @@ export type Product = {
   reviewCount: number;
 };
 
-export type ProductListResponse = {
-  products: Product[];
-  totalCount: number;
-};
-
 export type SortBy = "latest" | "popular" | "price-asc" | "price-desc";
 
 export type CategoryFilter = "all" | Product["category"];
@@ -37,18 +32,6 @@ export type ProductFilters = {
 /** useProductFilters reducer 가 관리하는 상태 — URL 로 복원되는 필터 전체(viewMode 제외). */
 export type FilterState = Omit<ProductFilters, "viewMode">;
 
-/** useProductFilters reducer 가 처리하는 액션. */
-export type FilterAction =
-  | { type: "setCategory"; value: CategoryFilter }
-  | { type: "setMinPrice"; value: number | "" }
-  | { type: "setMaxPrice"; value: number | "" }
-  | { type: "setSortBy"; value: SortBy }
-  | { type: "setSearchQuery"; value: string }
-  | { type: "setInStockOnly"; value: boolean }
-  | { type: "setPage"; value: number }
-  | { type: "restoreFromUrl"; value: FilterState }
-  | { type: "reset" };
-
 /** 서버로 보내는 조회 조건 — viewMode 같은 순수 표시 옵션은 제외. */
 export type ProductQuery = {
   category: CategoryFilter;
@@ -69,10 +52,4 @@ export type ProductBadges = {
   isSoldOut: boolean;
   isAlmostSoldOut: boolean;
   isFreeShipping: boolean;
-};
-
-/** 검색어 하이라이트를 위해 텍스트를 쪼갠 한 조각(일치 여부 포함). */
-export type HighlightPart = {
-  text: string;
-  isMatch: boolean;
 };
