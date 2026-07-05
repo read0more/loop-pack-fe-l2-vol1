@@ -46,6 +46,7 @@ export type FilterAction =
   | { type: "setSearchQuery"; value: string }
   | { type: "setInStockOnly"; value: boolean }
   | { type: "setPage"; value: number }
+  | { type: "restoreFromUrl"; value: FilterState }
   | { type: "reset" };
 
 /** 서버로 보내는 조회 조건 — viewMode 같은 순수 표시 옵션은 제외. */

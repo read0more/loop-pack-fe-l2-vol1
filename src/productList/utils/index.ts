@@ -1,6 +1,7 @@
 import { CATEGORIES, SORT_OPTIONS } from "../constants";
 import type {
   CategoryFilter,
+  FilterState,
   HighlightPart,
   Product,
   ProductBadges,
@@ -65,6 +66,31 @@ export function parseFiltersFromUrl(
     maxPrice: parsePrice(params.get("maxPrice") ?? ""),
     inStockOnly: params.get("inStock") === "true",
   };
+}
+
+/**
+ * 필터 상태를 URL 쿼리스트링으로 직렬화한다(기본값은 생략해 URL 을 깔끔하게 유지).
+ * parseFiltersFromUrl 의 역변환 — 두 함수가 같은 키 규약을 공유한다.
+ */
+export function buildFilterSearch(filters: FilterState): string {
+  const {
+    category,
+    searchQuery,
+    page,
+    sortBy,
+    minPrice,
+    maxPrice,
+    inStockOnly,
+  } = filters;
+  const params = new URLSearchParams();
+  if (category !== "all") params.set("category", category);
+  if (searchQuery) params.set("q", searchQuery);
+  if (page > 1) params.set("page", String(page));
+  if (sortBy !== "latest") params.set("sort", sortBy);
+  if (minPrice !== "") params.set("minPrice", String(minPrice));
+  if (maxPrice !== "") params.set("maxPrice", String(maxPrice));
+  if (inStockOnly) params.set("inStock", "true");
+  return params.toString();
 }
 
 /** 정가 대비 할인율(%)을 반올림해 반환한다. 정가가 없으면 0. */

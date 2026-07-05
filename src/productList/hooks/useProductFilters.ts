@@ -1,11 +1,16 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import type {
   FilterAction,
   FilterState,
   ProductFilters,
   ProductQuery,
 } from "../types";
-import { isSortBy, isViewMode, parseFiltersFromUrl } from "../utils";
+import {
+  buildFilterSearch,
+  isSortBy,
+  isViewMode,
+  parseFiltersFromUrl,
+} from "../utils";
 import { useDebouncedValue } from "./useDebouncedValue";
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -38,6 +43,8 @@ function filtersReducer(state: FilterState, action: FilterAction): FilterState {
       return { ...state, inStockOnly: action.value, page: 1 };
     case "setPage":
       return { ...state, page: action.value };
+    case "restoreFromUrl":
+      return action.value;
     case "reset":
       return INITIAL_FILTER_STATE;
   }
@@ -56,6 +63,18 @@ export function useProductFilters() {
   );
   // viewMode 는 URL·서버조회와 무관한 단발 표시 옵션이라 reducer 밖 useState 로 둔다.
   const [viewMode, setViewMode] = useState<ProductFilters["viewMode"]>("grid");
+
+  // 뒤로/앞으로가기(popstate)로 URL 이 바뀌면 그 URL 을 다시 읽어 상태를 복원한다.
+  useEffect(() => {
+    const handlePopState = () =>
+      dispatch({
+        type: "restoreFromUrl",
+        value: parseFiltersFromUrl(window.location.search),
+      });
+    window.addEventListener("popstate", handlePopState);
+
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const handleCategoryChange = (next: ProductFilters["category"]) =>
     dispatch({ type: "setCategory", value: next });
@@ -80,8 +99,14 @@ export function useProductFilters() {
     if (isViewMode(value)) setViewMode(value);
   };
 
-  const handlePageChange = (next: number) =>
+  const handlePageChange = (next: number) => {
+    window.history.pushState(
+      null,
+      "",
+      `?${buildFilterSearch({ ...state, page: next })}`,
+    );
     dispatch({ type: "setPage", value: next });
+  };
 
   const handleResetFilters = () => dispatch({ type: "reset" });
 
