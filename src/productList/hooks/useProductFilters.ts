@@ -108,6 +108,12 @@ export function useProductFilters() {
     dispatch({ type: "setPage", value: next });
   };
 
+  const clampPageToTotal = (totalPages: number) => {
+    if (state.page > totalPages) {
+      dispatch({ type: "setPage", value: totalPages });
+    }
+  };
+
   const handleResetFilters = () => dispatch({ type: "reset" });
 
   const filters: ProductFilters = { ...state, viewMode };
@@ -149,6 +155,7 @@ export function useProductFilters() {
     handleInStockToggle,
     handleViewModeChange,
     handlePageChange,
+    clampPageToTotal,
     handleResetFilters,
   };
 }

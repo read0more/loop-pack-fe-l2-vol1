@@ -33,6 +33,7 @@ export function ProductListPage() {
     handleInStockToggle,
     handleViewModeChange,
     handlePageChange,
+    clampPageToTotal,
     handleResetFilters,
   } = useProductFilters();
 
@@ -59,6 +60,8 @@ export function ProductListPage() {
     // 전체 리로드(캐시·위시리스트·URL 동기화까지 초기화) 대신 해당 쿼리만 재요청한다.
     return <ProductListError error={error} onRetry={() => refetch()} />;
   }
+
+  clampPageToTotal(totalPages);
 
   return (
     <div className="product-list-page">
