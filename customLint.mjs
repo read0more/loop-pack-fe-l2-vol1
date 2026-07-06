@@ -1,6 +1,4 @@
-import type { ESLint } from "eslint";
-
-const plugin: ESLint.Plugin = {
+const plugin = {
   meta: {
     name: "customLint",
     version: "1.0.0",
