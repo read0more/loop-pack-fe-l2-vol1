@@ -1,29 +1,71 @@
+"use client";
+
+import { useState } from "react";
+import { TextSelect } from "@/components/ui/select/demos/TextSelect";
+import { SizeSelect } from "@/components/ui/select/demos/SizeSelect";
+import { ThumbnailSelect } from "@/components/ui/select/demos/ThumbnailSelect";
+import styles from "./page.module.css";
+
+const DEMO_LABELS = {
+  size: "① 사이즈",
+  thumbnail: "② 썸네일",
+  text: "③ 텍스트 목록",
+} as const;
+
 export default function Home() {
+  const [onChangeProbeByDemo, setOnChangeProbeByDemo] = useState<
+    Record<string, unknown>
+  >({});
+  const handleOnChangeProbe = (demoLabel: string, selectedOption: unknown) =>
+    setOnChangeProbeByDemo((prev) => ({
+      ...prev,
+      [demoLabel]: selectedOption,
+    }));
+
   return (
-    <main style={{ maxWidth: 640, margin: "0 auto", padding: "64px 24px" }}>
-      <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>
-        Commerce
-      </h1>
-      <p style={{ color: "#5a6675", lineHeight: 1.7, marginBottom: 24 }}>
-        4주차부터 여기에 커머스를 쌓아갑니다. 이번 주는 디자인 시스템의 뼈대
-        <b> Select</b>와 <b>Dialog</b>를 직접 만드는 것부터 시작해요.
-      </p>
-      <ul style={{ lineHeight: 2, color: "#18212e", paddingLeft: 18 }}>
-        <li>
-          컴포넌트 자리: <code>src/components/ui/select</code> ·{" "}
-          <code>src/components/ui/dialog</code>
-        </li>
-        <li>
-          mock 백엔드: <code>GET /api/products</code> (
-          <code>src/app/api/products/route.ts</code>)
-        </li>
-        <li>
-          과제 명세: <code>docs/assignments/week-04.md</code>
-        </li>
-      </ul>
-      <p style={{ color: "#8794a3", marginTop: 24, fontSize: 14 }}>
-        구조는 최소 골격만 있어요. 폴더 구성은 각자 근거를 대고 바꾸면 돼요.
-      </p>
+    <main className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.title}>
+          Downshift참고한 Select 헤드리스 + 훅 형식 데모
+        </div>
+      </header>
+
+      <section className={styles.changeLog}>
+        <div className={styles.changeLogTitle}>
+          useSelecton훅 onChange 출력 확인용(선택 시 갱신)
+        </div>
+        {Object.values(DEMO_LABELS).map((label) => (
+          <div key={label} className={styles.changeLogItem}>
+            <span className={styles.changeLogLabel}>{label}</span>
+            <span>{JSON.stringify(onChangeProbeByDemo[label] ?? null)}</span>
+          </div>
+        ))}
+      </section>
+
+      <section className={styles.grid}>
+        <div className={styles.card}>
+          <div className={styles.cardTitle}>{DEMO_LABELS.size}</div>
+          <SizeSelect
+            onChange={(option) => handleOnChangeProbe(DEMO_LABELS.size, option)}
+          />
+        </div>
+
+        <div className={styles.card}>
+          <div className={styles.cardTitle}>{DEMO_LABELS.thumbnail}</div>
+          <ThumbnailSelect
+            onChange={(product) =>
+              handleOnChangeProbe(DEMO_LABELS.thumbnail, product)
+            }
+          />
+        </div>
+
+        <div className={styles.card}>
+          <div className={styles.cardTitle}>{DEMO_LABELS.text}</div>
+          <TextSelect
+            onChange={(pack) => handleOnChangeProbe(DEMO_LABELS.text, pack)}
+          />
+        </div>
+      </section>
     </main>
   );
 }
