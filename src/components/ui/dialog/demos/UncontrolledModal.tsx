@@ -1,5 +1,3 @@
-"use client";
-
 import { Dialog } from "../index";
 import styles from "./demos.module.css";
 

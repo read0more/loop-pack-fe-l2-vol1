@@ -1,5 +1,3 @@
-"use client";
-
 // docs/images/select1.png 구현
 
 import { useSelect } from "../useSelect";

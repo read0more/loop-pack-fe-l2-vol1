@@ -1,5 +1,3 @@
-"use client";
-
 // docs/images/select3.png 구현
 
 import { type ReactNode } from "react";

@@ -1,5 +1,3 @@
-"use client";
-
 // docs/images/select2.png 구현
 
 import Image from "next/image";
