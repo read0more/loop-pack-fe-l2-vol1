@@ -4,6 +4,9 @@ import { useState } from "react";
 import { TextSelect } from "@/components/ui/select/demos/TextSelect";
 import { SizeSelect } from "@/components/ui/select/demos/SizeSelect";
 import { ThumbnailSelect } from "@/components/ui/select/demos/ThumbnailSelect";
+import { UncontrolledModal } from "@/components/ui/dialog/demos/UncontrolledModal";
+import { ControlledNonModal } from "@/components/ui/dialog/demos/ControlledNonModal";
+import { AsChildModal } from "@/components/ui/dialog/demos/AsChildModal";
 import styles from "./page.module.css";
 
 const DEMO_LABELS = {
@@ -64,6 +67,27 @@ export default function Home() {
           <TextSelect
             onChange={(pack) => handleOnChangeProbe(DEMO_LABELS.text, pack)}
           />
+        </div>
+      </section>
+
+      <header className={`${styles.header} ${styles.sectionGap}`}>
+        <div className={styles.title}>Dialog (Compound) — 이중 API 데모</div>
+      </header>
+
+      <section className={styles.grid}>
+        <div className={styles.card}>
+          <div className={styles.cardTitle}>uncontrolled (modal)</div>
+          <UncontrolledModal />
+        </div>
+
+        <div className={styles.card}>
+          <div className={styles.cardTitle}>controlled (non-modal)</div>
+          <ControlledNonModal />
+        </div>
+
+        <div className={styles.card}>
+          <div className={styles.cardTitle}>asChild (modal)</div>
+          <AsChildModal />
         </div>
       </section>
     </main>
