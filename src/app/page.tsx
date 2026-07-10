@@ -4,6 +4,7 @@ import { useState } from "react";
 import { TextSelect } from "@/components/ui/select/demos/TextSelect";
 import { SizeSelect } from "@/components/ui/select/demos/SizeSelect";
 import { ThumbnailSelect } from "@/components/ui/select/demos/ThumbnailSelect";
+import { ControlledSelect } from "@/components/ui/select/demos/ControlledSelect";
 import { UncontrolledModal } from "@/components/ui/dialog/demos/UncontrolledModal";
 import { ControlledNonModal } from "@/components/ui/dialog/demos/ControlledNonModal";
 import { AsChildModal } from "@/components/ui/dialog/demos/AsChildModal";
@@ -13,6 +14,7 @@ const DEMO_LABELS = {
   size: "① 사이즈",
   thumbnail: "② 썸네일",
   text: "③ 텍스트 목록",
+  controlled: "④ controlled (리모컨 ↔ select 양방향)",
 } as const;
 
 export default function Home() {
@@ -30,6 +32,10 @@ export default function Home() {
       <header className={styles.header}>
         <div className={styles.title}>
           Downshift참고한 Select 헤드리스 + 훅 형식 데모
+        </div>
+        <div>
+          1~3까지는 uncontrolled로 과제 요구사항 구현, 4번은 controlled 예시.
+          선택 시 onChange 출력 확인용.
         </div>
       </header>
 
@@ -70,6 +76,17 @@ export default function Home() {
         </div>
       </section>
 
+      <section className={`${styles.grid} ${styles.sectionGap}`}>
+        <div className={styles.card}>
+          <div className={styles.cardTitle}>{DEMO_LABELS.controlled}</div>
+          <ControlledSelect
+            onChange={(option) =>
+              handleOnChangeProbe(DEMO_LABELS.controlled, option)
+            }
+          />
+        </div>
+      </section>
+
       <header className={`${styles.header} ${styles.sectionGap}`}>
         <div className={styles.title}>Dialog (Compound) — 이중 API 데모</div>
       </header>
@@ -82,6 +99,7 @@ export default function Home() {
 
         <div className={styles.card}>
           <div className={styles.cardTitle}>controlled (non-modal)</div>
+          <div>- overlay가 없기 떄문에 스크롤을 잠그지 않는다</div>
           <ControlledNonModal />
         </div>
 
