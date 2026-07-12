@@ -43,6 +43,7 @@ export default defineConfig([
     extends: ["css/recommended"],
     rules: {
       "css/no-invalid-properties": ["error", { allowUnknownVariables: true }],
+      "css/use-baseline": ["error", { allowProperties: ["resize"] }],
     },
   },
   {
