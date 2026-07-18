@@ -39,6 +39,12 @@
   justify-content: space-between;
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--color-border);
+  /* 스크롤해도 장바구니·위시리스트 개수가 보이게 상단 고정 */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-top: var(--space-md);
+  background: var(--background);
 }
 
 .brandLink {
@@ -51,6 +57,13 @@
   gap: var(--space-md);
   align-items: center;
   font-size: 16px;
+}
+
+.headerCounts {
+  display: flex;
+  gap: var(--space-md);
+  font-size: 14px;
+  color: var(--color-muted);
 }
 
 .hero {
@@ -237,6 +250,27 @@
   font-size: 14px;
   color: var(--color-subtle);
   text-decoration: line-through;
+}
+
+.cardActions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.cardActions button {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cardActions button[aria-pressed="true"] {
+  border-color: var(--color-muted);
+  font-weight: 700;
 }
 
 .pagination {

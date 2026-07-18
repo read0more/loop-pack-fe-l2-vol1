@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CommerceHeaderCounts } from "./CommerceHeaderCounts";
 import styles from "./commerce.module.css";
 
 export function CommerceHeader() {
@@ -9,6 +10,7 @@ export function CommerceHeader() {
       </Link>
       <nav className={styles.nav}>
         <Link href="/products">상품</Link>
+        <CommerceHeaderCounts />
       </nav>
     </header>
   );

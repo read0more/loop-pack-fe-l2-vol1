@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Product } from "@/types/commerce";
 import { formatPrice } from "@/utils";
+import { ProductCardActions } from "./ProductCardActions";
 import styles from "./commerce.module.css";
 
 const CARD_IMAGE_SIZE = 300;
@@ -23,9 +24,12 @@ export function ProductCard({ product }: { product: Product }) {
       <div className={styles.cardPriceRow}>
         <strong className={styles.cardPrice}>{formatPrice(price)}</strong>
         {hasDiscount && (
-          <span className={styles.cardOriginalPrice}>{formatPrice(originalPrice)}</span>
+          <span className={styles.cardOriginalPrice}>
+            {formatPrice(originalPrice)}
+          </span>
         )}
       </div>
+      <ProductCardActions productId={product.id} />
     </article>
   );
 }
