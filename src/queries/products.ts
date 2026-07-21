@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 import { getProducts } from "@/services/commerce";
 import { normalizeProductListQuery } from "@/utils/productList";
 import type { ProductListQuery } from "@/types/commerce";
@@ -19,6 +19,8 @@ export const productQueries = {
     return queryOptions({
       queryKey: [...productQueries.lists(), normalized],
       queryFn: () => getProducts(normalized),
+      // 조건/페이지 전환 시 이전 결과를 유지해 빈 화면·로딩 깜빡임을 없앤다.
+      placeholderData: keepPreviousData,
     });
   },
 };

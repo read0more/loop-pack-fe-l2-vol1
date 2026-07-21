@@ -315,6 +315,13 @@
   margin-bottom: var(--space-md);
 }
 
+/* 페이지/조건 전환 중(keepPreviousData) 이전 목록을 흐리게 유지해 "갱신 중"을 알린다.
+   목록을 언마운트하지 않아 깜빡임·포커스 유실이 없다. */
+.updating {
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
 .status {
   padding: 64px 0;
   text-align: center;
