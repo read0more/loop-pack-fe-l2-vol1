@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
-// Advanced C — 페이지 전환 중 기존 목록 유지(항목 4)
+// Advanced C — 페이지 전환 중 기존 목록 유지(keepPreviousData) + 오류 재시도(에러 경계 위임)
 
+import { Component, type ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import {
   cleanup,
@@ -9,15 +10,41 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { NuqsTestingAdapter } from "nuqs/adapters/testing";
-import { ProductListContent } from "./ProductListContent";
+import { ProductList } from "./ProductList";
+import { makeQueryClient } from "@/lib/queryClient";
 import { getProducts } from "@/services/commerce";
 import type { Product, ProductListResponse } from "@/types/commerce";
 
 vi.mock("@/services/commerce", () => ({ getProducts: vi.fn() }));
 
 const getProductsMock = vi.mocked(getProducts);
+
+const BOUNDARY_FALLBACK = "목록 에러 경계";
+
+// 실제 앱에선 Next 의 error.tsx 가 세그먼트 경계이나 단위 테스트에선 최소 ErrorBoundary 로
+// "render 중 throw 되어 경계로 넘어가는지"만 검증한다.
+// Error Boundary 는 반드시 클래스여야 하고, getDerivedStateFromError(렌더용 fallback 상태) 또는
+// componentDidCatch(로깅 등 side effect) 중 하나 이상을 구현해야 React 가 경계로 인식한다.
+class TestErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+  // 자식이 render 중 throw 하면 React 가 이 static 메서드를 호출하고(에러를 인자로 넘김),
+  // 반환값을 경계 state 에 merge 한다 → hasError:true 로 바꿔 아래 render 가 fallback 을 그리게 한다.
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    return this.state.hasError ? (
+      <p>{BOUNDARY_FALLBACK}</p>
+    ) : (
+      this.props.children
+    );
+  }
+}
 
 function makeProduct(id: string, name: string): Product {
   return {
@@ -41,13 +68,20 @@ function makeResponse(page: number, products: Product[]): ProductListResponse {
 }
 
 function renderList(searchParams = "?page=1") {
-  const queryClient = new QueryClient();
+  // 프로덕션과 같은 throwOnError 정책을 쓰려고 makeQueryClient 를 쓰되,
+  // 테스트에선 재시도 없이 실패를 즉시 노출하도록 retry 만 끈다.
+  const queryClient = makeQueryClient();
+  queryClient.setDefaultOptions({
+    queries: { ...queryClient.getDefaultOptions().queries, retry: false },
+  });
 
   // hasMemory: URL 쓰기(setPage 등)를 읽기 상태에 반영해 실제 네비게이션처럼 동작하게 한다.
   return render(
     <QueryClientProvider client={queryClient}>
       <NuqsTestingAdapter searchParams={searchParams} hasMemory>
-        <ProductListContent />
+        <TestErrorBoundary>
+          <ProductList />
+        </TestErrorBoundary>
       </NuqsTestingAdapter>
     </QueryClientProvider>,
   );
@@ -59,7 +93,21 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
-describe("ProductListContent", () => {
+describe("ProductList", () => {
+  test("보여줄 데이터가 없는 조회 실패 시 throw 해서 에러 경계로 넘어간다", async () => {
+    getProductsMock.mockRejectedValue(new Error("서버 오류"));
+    // 경계가 에러를 잡을 때 React 가 찍는 console.error 노이즈를 억제한다.
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    renderList();
+
+    expect(await screen.findByText(BOUNDARY_FALLBACK)).toBeTruthy();
+
+    consoleError.mockRestore();
+  });
+
   test("페이지 전환 중 이전 목록을 유지한다(keepPreviousData)", async () => {
     // page 2 응답을 지연시켜 "전환 중" 상태를 만든다. page 별로 분기해
     // 자동 prefetch(항목 2)가 어떤 순서로 호출해도 같은 응답을 돌려주게 한다.

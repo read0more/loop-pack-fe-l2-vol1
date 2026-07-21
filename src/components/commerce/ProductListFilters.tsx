@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState, type SyntheticEvent } from "react";
-import type { CategoryId, ProductSort } from "@/types/commerce";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useProductListSearchParams } from "@/hooks/useProductListSearchParams";
 import {
   CATEGORY_LABELS,
   CATEGORY_VALUES,
@@ -15,30 +15,17 @@ import styles from "./commerce.module.css";
 
 export const SEARCH_DEBOUNCE_MS = 300;
 
-type ProductListFiltersProps = {
-  searchTerm: string;
-  category: CategoryId | "all";
-  sort: ProductSort;
-  onSearch: (term: string) => void;
-  onCategoryChange: (category: CategoryId | "all") => void;
-  onSortChange: (sort: ProductSort) => void;
-};
+export function ProductListFilters() {
+  const { query, setSearch, setFilter } = useProductListSearchParams();
+  const searchTerm = query.q;
 
-export function ProductListFilters({
-  searchTerm,
-  category,
-  sort,
-  onSearch,
-  onCategoryChange,
-  onSortChange,
-}: ProductListFiltersProps) {
   const [inputValue, setInputValue] = useState(searchTerm);
 
   // 같은 라우트(/products) 안에서 URL 만 바뀌면(예: 헤더 "상품" 링크로 검색어 제거) React 는 이 컴포넌트를
   // "같은 자리의 같은 컴포넌트"로 보고 인스턴스를 재사용한다 → unmount 가 없어 로컬 state 인 inputValue 가
   // 초기화되지 않고 옛 검색어가 그대로 남는다(입력창이 URL 과 어긋남).
   // 그래서 prevSearchTerm 은 "직전 검색어(URL)"를 기억해 그 순간을 감지하는 마커다.
-  // (searchTerm 마다 컴포넌트를 key로 remount 하면 초기화되지만, 입력 디바운스로 onSearch 될 때도 remount 돼 입력 포커스가 날아간다.)
+  // (searchTerm 마다 컴포넌트를 key로 remount 하면 초기화되지만, 입력 디바운스후 다시 fetch될 때도 remount 돼 입력 포커스가 날아간다.)
   const [prevSearchTerm, setPrevSearchTerm] = useState(searchTerm);
 
   // 위 이유로 어긋난 입력창을 URL 검색어에 다시 동기화한다: searchTerm 이 바뀐 렌더에서만 inputValue 를 그 값으로 맞춘다.
@@ -59,12 +46,12 @@ export function ProductListFilters({
     const next = debouncedInputValue.trim();
 
     if (debouncedInputValue === inputValue && next !== searchTerm)
-      onSearch(next);
-  }, [debouncedInputValue, inputValue, searchTerm, onSearch]);
+      setSearch(next);
+  }, [debouncedInputValue, inputValue, searchTerm, setSearch]);
 
   const handleSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSearch(inputValue.trim());
+    setSearch(inputValue.trim());
   };
 
   return (
@@ -82,10 +69,10 @@ export function ProductListFilters({
       <label>
         카테고리
         <select
-          value={category}
+          value={query.category}
           onChange={(event) => {
             if (!isCategoryValue(event.target.value)) return;
-            onCategoryChange(event.target.value);
+            setFilter({ category: event.target.value });
           }}
         >
           {CATEGORY_VALUES.map((value) => (
@@ -98,10 +85,10 @@ export function ProductListFilters({
       <label>
         정렬
         <select
-          value={sort}
+          value={query.sort}
           onChange={(event) => {
             if (!isSortValue(event.target.value)) return;
-            onSortChange(event.target.value);
+            setFilter({ sort: event.target.value });
           }}
         >
           {SORT_VALUES.map((value) => (

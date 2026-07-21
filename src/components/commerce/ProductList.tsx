@@ -4,17 +4,14 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { productQueries } from "@/queries/products";
 import { useProductListSearchParams } from "@/hooks/useProductListSearchParams";
-import { getErrorMessage } from "@/utils";
-import { ProductListFilters } from "./ProductListFilters";
 import { ProductListResult } from "./ProductListResult";
 import styles from "./commerce.module.css";
 
-export function ProductListContent() {
-  const { query, setSearch, setFilter, setPage, clampPageToRange } =
-    useProductListSearchParams();
+export function ProductList() {
+  const { query, setPage, clampPageToRange } = useProductListSearchParams();
   const queryClient = useQueryClient();
 
-  const { data, isPending, isError, isPlaceholderData, error } = useQuery(
+  const { data, isPending, isPlaceholderData } = useQuery(
     productQueries.list(query),
   );
 
@@ -39,23 +36,10 @@ export function ProductListContent() {
 
   return (
     <>
-      <ProductListFilters
-        searchTerm={query.q}
-        category={query.category}
-        sort={query.sort}
-        onSearch={setSearch}
-        onCategoryChange={(category) => setFilter({ category })}
-        onSortChange={(sort) => setFilter({ sort })}
-      />
       {/* keepPreviousData 라 페이지 전환 중엔 isPending 이 false 다 → 첫 로드에만 로딩을 띄운다.
           isOverRange 면 곧 교정되니 빈 화면 대신 로딩을 유지한다. */}
       {(isPending || isOverRange) && (
         <p className={styles.status}>상품 목록을 불러오는 중…</p>
-      )}
-      {isError && (
-        <p className={`${styles.status} ${styles.error}`}>
-          {getErrorMessage(error, "상품 목록을 불러오지 못했습니다.")}
-        </p>
       )}
       {data && !isOverRange && (
         // 전환 중(isPlaceholderData)엔 이전 목록을 흐리게 유지해 "갱신 중"을 표시(언마운트 금지)

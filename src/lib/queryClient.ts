@@ -7,7 +7,14 @@ const DEFAULT_STALE_TIME = 60 * 1000;
 export function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
-      queries: { staleTime: DEFAULT_STALE_TIME },
+      queries: {
+        staleTime: DEFAULT_STALE_TIME,
+        // true 면 렌더 중 에러를 throw 한다(→ 가장 가까운 에러 경계에 잡힘). retry 를 다 쓰고도 실패한
+        // 최종 시점에 평가된다. 보여줄 자기 데이터가 없을 때(첫 로드 실패)만 throw 한다. 이미 목록을 보던 중
+        // background refetch 가 실패하면(data 존재) throw 하지 않는다 — throw 하면 멀쩡히 보던 목록이
+        // 통째로 에러 화면으로 교체되므로, stale 데이터를 그대로 유지한다.
+        throwOnError: (_error, query) => query.state.data === undefined,
+      },
     },
   });
 }

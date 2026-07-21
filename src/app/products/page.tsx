@@ -1,8 +1,7 @@
 import { Suspense } from "react";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { createLoader, type SearchParams } from "nuqs/server";
-import { CommerceHeader } from "@/components/commerce/CommerceHeader";
-import { ProductListContent } from "@/components/commerce/ProductListContent";
+import { ProductList } from "@/components/commerce/ProductList";
 import {
   productListParsers,
   resolveProductListQuery,
@@ -29,21 +28,15 @@ export default async function ProductListPage({
   await queryClient.prefetchQuery(productQueries.list(query));
 
   return (
-    <main className={styles.page}>
-      <CommerceHeader />
-      <section className={styles.section}>
-        <h1 className={styles.sectionTitle}>상품 목록</h1>
-        {/* dehydrate 로 서버 캐시를 클라에 넘긴다 → ProductListContent 의 useQuery 가 mount 시 재요청 없이 hit */}
-        <HydrationBoundary state={dehydrate(queryClient)}>
-          {/* nuqs(useSearchParams)에서 생기는 CSR bailout 격리
-              https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout */}
-          <Suspense
-            fallback={<p className={styles.status}>상품 목록을 불러오는 중…</p>}
-          >
-            <ProductListContent />
-          </Suspense>
-        </HydrationBoundary>
-      </section>
-    </main>
+    // dehydrate 로 서버 캐시를 클라에 넘긴다 → ProductList 의 useQuery 가 mount 시 재요청 없이 hit
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      {/* nuqs(useSearchParams)에서 생기는 CSR bailout 격리
+          https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout */}
+      <Suspense
+        fallback={<p className={styles.status}>상품 목록을 불러오는 중…</p>}
+      >
+        <ProductList />
+      </Suspense>
+    </HydrationBoundary>
   );
 }
