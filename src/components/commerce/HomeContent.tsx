@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ProductGrid } from "./ProductGrid";
+import { PrefetchCategoryLink } from "./PrefetchCategoryLink";
 import type { HomeResponse, Product } from "@/types/commerce";
 import styles from "./commerce.module.css";
 
@@ -34,13 +34,14 @@ export function HomeContent({ home }: { home: HomeResponse }) {
         <h2 className={styles.sectionTitle}>카테고리</h2>
         <div className={styles.categories}>
           {home.categories.map((category) => (
-            <Link
+            <PrefetchCategoryLink
               key={category.id}
+              category={category.id}
               href={`/products?category=${category.id}`}
               className={styles.categoryChip}
             >
               {category.name}
-            </Link>
+            </PrefetchCategoryLink>
           ))}
         </div>
       </section>

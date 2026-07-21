@@ -34,3 +34,17 @@ export function resolveProductListQuery(
 ): ProductListParams {
   return { ...parsed, page: clampPageToLowerBound(parsed.page) };
 }
+
+// 홈에서 목록으로 이동하기 전 prefetch 시, 하드코딩 대신 이 단일 출처를 써서
+// 목록 페이지의 resolveProductListQuery(파서 파싱값)와 같은 queryKey 보장
+export function buildDefaultProductListQuery(
+  overrides: Partial<ProductListParams>,
+): ProductListParams {
+  return resolveProductListQuery({
+    q: PRODUCT_LIST_DEFAULTS.q,
+    category: PRODUCT_LIST_DEFAULTS.category,
+    sort: PRODUCT_LIST_DEFAULTS.sort,
+    page: PRODUCT_LIST_DEFAULTS.page,
+    ...overrides,
+  });
+}

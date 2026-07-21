@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CommerceHeaderCounts } from "./CommerceHeaderCounts";
+import { PrefetchCategoryLink } from "./PrefetchCategoryLink";
 import styles from "./commerce.module.css";
 
 export function CommerceHeader() {
@@ -9,7 +10,9 @@ export function CommerceHeader() {
         Commerce
       </Link>
       <nav className={styles.nav}>
-        <Link href="/products">상품</Link>
+        <PrefetchCategoryLink category="all" href="/products">
+          상품
+        </PrefetchCategoryLink>
         <CommerceHeaderCounts />
       </nav>
     </header>

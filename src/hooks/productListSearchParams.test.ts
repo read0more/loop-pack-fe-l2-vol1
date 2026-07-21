@@ -1,5 +1,9 @@
 import { describe, expect, test } from "vitest";
-import { resolveProductListQuery } from "@/hooks/productListSearchParams";
+import {
+  buildDefaultProductListQuery,
+  resolveProductListQuery,
+} from "@/hooks/productListSearchParams";
+import { PRODUCT_LIST_DEFAULTS } from "@/utils/productList";
 import type { ProductListParams } from "@/queries/products";
 
 const BASE: ProductListParams = {
@@ -32,6 +36,26 @@ describe("resolveProductListQuery — URL 파싱값을 상품 목록 조회 조�
       category: "home",
       sort: "price-asc",
       page: 2,
+    });
+  });
+});
+
+describe("buildDefaultProductListQuery — 파서 default(PRODUCT_LIST_DEFAULTS)에서 파생한 조회 조건", () => {
+  test("override 없으면 파서 default와 같은 조건을 만든다", () => {
+    expect(buildDefaultProductListQuery({})).toEqual({
+      q: PRODUCT_LIST_DEFAULTS.q,
+      category: PRODUCT_LIST_DEFAULTS.category,
+      sort: PRODUCT_LIST_DEFAULTS.sort,
+      page: PRODUCT_LIST_DEFAULTS.page,
+    });
+  });
+
+  test("category override 는 default 위에 덮어쓴다", () => {
+    expect(buildDefaultProductListQuery({ category: "home" })).toEqual({
+      q: PRODUCT_LIST_DEFAULTS.q,
+      category: "home",
+      sort: PRODUCT_LIST_DEFAULTS.sort,
+      page: PRODUCT_LIST_DEFAULTS.page,
     });
   });
 });
