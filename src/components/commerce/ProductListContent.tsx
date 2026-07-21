@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { productQueries } from "@/queries/products";
 import { useProductListSearchParams } from "@/hooks/useProductListSearchParams";
 import { getErrorMessage } from "@/utils";
@@ -12,6 +12,7 @@ import styles from "./commerce.module.css";
 export function ProductListContent() {
   const { query, setSearch, setFilter, setPage, clampPageToRange } =
     useProductListSearchParams();
+  const queryClient = useQueryClient();
 
   const { data, isPending, isError, error } = useQuery(
     productQueries.list(query),
@@ -19,10 +20,20 @@ export function ProductListContent() {
 
   const totalPages = data ? Math.ceil(data.totalCount / data.pageSize) : 0;
   const isOverRange = totalPages >= 1 && query.page > totalPages;
+  const hasNextPage = query.page < totalPages;
 
   useEffect(() => {
     clampPageToRange(totalPages);
   }, [totalPages, clampPageToRange]);
+
+  // 다음 페이지 선제 prefetch — "다음" 클릭 시 캐시 hit 으로 네트워크 대기 없이 즉시 표시한다.
+  useEffect(() => {
+    if (!data || !hasNextPage) return;
+
+    queryClient.prefetchQuery(
+      productQueries.list({ ...query, page: query.page + 1 }),
+    );
+  }, [queryClient, query, data, hasNextPage]);
 
   return (
     <>
