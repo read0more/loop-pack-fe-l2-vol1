@@ -11,9 +11,9 @@ import {
 import type { CategoryId, ProductSort } from "@/types/commerce";
 
 const PUSH_TO_HISTORY = { history: "push" } as const;
+const REPLACE_HISTORY = { history: "replace" } as const;
 
 type ProductListFilter = {
-  q?: string;
   category?: CategoryId | "all";
   sort?: ProductSort;
 };
@@ -45,11 +45,21 @@ export function useProductListSearchParams() {
     [queryState.page, setQueryState],
   );
 
-  return {
-    query,
-    setFilter: (filter: ProductListFilter) =>
+  // setQueryState 는 nuqs 가 안정적으로 유지하므로, hook을 사용하는 측에서(effect deps 등) 안심하고
+  // 의존할 수 있도록 핸들러도 안정적인 참조로 노출한다.
+  const setSearch = useCallback(
+    (q: string) => setQueryState({ q, page: FIRST_PAGE }, REPLACE_HISTORY),
+    [setQueryState],
+  );
+  const setFilter = useCallback(
+    (filter: ProductListFilter) =>
       setQueryState({ ...filter, page: FIRST_PAGE }),
-    setPage: (page: number) => setQueryState({ page }),
-    clampPageToRange,
-  };
+    [setQueryState],
+  );
+  const setPage = useCallback(
+    (page: number) => setQueryState({ page }),
+    [setQueryState],
+  );
+
+  return { query, setSearch, setFilter, setPage, clampPageToRange };
 }

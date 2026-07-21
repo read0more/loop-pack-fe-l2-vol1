@@ -10,7 +10,7 @@ import { ProductListResult } from "./ProductListResult";
 import styles from "./commerce.module.css";
 
 export function ProductListContent() {
-  const { query, setFilter, setPage, clampPageToRange } =
+  const { query, setSearch, setFilter, setPage, clampPageToRange } =
     useProductListSearchParams();
 
   const { data, isPending, isError, error } = useQuery(
@@ -27,10 +27,10 @@ export function ProductListContent() {
   return (
     <>
       <ProductListFilters
-        q={query.q}
+        searchTerm={query.q}
         category={query.category}
         sort={query.sort}
-        onSearch={(q) => setFilter({ q })}
+        onSearch={setSearch}
         onCategoryChange={(category) => setFilter({ category })}
         onSortChange={(sort) => setFilter({ sort })}
       />
