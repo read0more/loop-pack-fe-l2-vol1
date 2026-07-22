@@ -73,13 +73,14 @@ describe("ProductListFilters 검색어 debounce", () => {
     expect(setSearch).not.toHaveBeenCalled();
   });
 
-  test("제출(Enter/버튼)은 디바운스를 우회해 즉시 setSearch 를 호출한다", () => {
+  test("Enter 제출은 디바운스를 우회해 즉시(trim 후) setSearch 를 호출한다", () => {
     const setSearch = vi.fn();
     renderFilters(setSearch);
 
     fireEvent.change(screen.getByRole("searchbox"), {
-      target: { value: "nike" },
+      target: { value: "  nike  " },
     });
+    // 타이머를 진행시키지 않는다 — form submit(Enter)은 debounce 를 기다리지 않고 즉시 커밋해야 한다.
     fireEvent.submit(screen.getByRole("search"));
 
     expect(setSearch).toHaveBeenCalledWith("nike");
