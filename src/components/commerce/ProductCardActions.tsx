@@ -18,6 +18,7 @@ export function ProductCardActions({ productId }: { productId: string }) {
       <button
         type="button"
         aria-pressed={isInCart}
+        aria-label="장바구니"
         onClick={() => toggleCart(productId)}
       >
         {isInCart ? "담김" : "담기"}

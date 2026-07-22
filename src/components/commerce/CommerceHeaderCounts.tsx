@@ -15,8 +15,12 @@ export function CommerceHeaderCounts() {
 
   return (
     <div className={styles.headerCounts}>
-      <span>장바구니 {cart}</span>
-      <span>위시리스트 {wishlist}</span>
+      <span>
+        장바구니 <span data-testid="cart-count">{cart}</span>
+      </span>
+      <span>
+        위시리스트 <span data-testid="wishlist-count">{wishlist}</span>
+      </span>
     </div>
   );
 }
