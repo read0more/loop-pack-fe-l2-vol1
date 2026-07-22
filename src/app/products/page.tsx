@@ -1,42 +1,22 @@
 import { Suspense } from "react";
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { createLoader, type SearchParams } from "nuqs/server";
-import { ProductList } from "@/components/commerce/ProductList";
-import {
-  productListParsers,
-  resolveProductListQuery,
-} from "@/hooks/productListSearchParams";
-import { getQueryClient } from "@/lib/queryClient";
-import { productQueries } from "@/queries/products";
+import { type SearchParams } from "nuqs/server";
+import { ProductListSection } from "./ProductListSection";
 import styles from "@/components/commerce/commerce.module.css";
 
-// useQueryStates은 훅이므로 nuqs/server의 createLoader를 사용하여 search params를 파싱한다.
-// https://nuqs.dev/docs/server-side
-const loadProductListParams = createLoader(productListParsers);
-
-export default async function ProductListPage({
+export default function ProductListPage({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const query = resolveProductListQuery(
-    await loadProductListParams(searchParams),
-  );
-
-  // 요청마다 새 QueryClient 로, 클라와 "같은" 쿼리 팩토리를 prefetch 한다 → 같은 queryKey 로 캐시가 채워진다.
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(productQueries.list(query));
-
   return (
-    // dehydrate 로 서버 캐시를 클라에 넘긴다 → ProductList 의 useQuery 가 mount 시 재요청 없이 hit
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      {/* nuqs(useSearchParams)에서 생기는 CSR bailout 격리
-          https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout */}
-      <Suspense
-        fallback={<p className={styles.status}>상품 목록을 불러오는 중…</p>}
-      >
-        <ProductList />
-      </Suspense>
-    </HydrationBoundary>
+    // 이 Suspense 는 두 역할을 겸한다:
+    //  (1) 스트리밍 경계 — 목록 prefetch(ProductListSection 의 await)를 여기서 잡아 HTML 껍데기를 먼저 내려준다.
+    //  (2) nuqs(useSearchParams)의 CSR bailout 격리
+    //      https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+    <Suspense
+      fallback={<p className={styles.status}>상품 목록을 불러오는 중…</p>}
+    >
+      <ProductListSection searchParams={searchParams} />
+    </Suspense>
   );
 }
