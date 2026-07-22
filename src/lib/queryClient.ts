@@ -1,14 +1,9 @@
 import { QueryClient, environmentManager } from "@tanstack/react-query";
 
-// 전역 staleTime. 서버에서 prefetch 한 데이터가 클라 mount 즉시 stale 로 간주돼 중복 재요청되는 것을 막는다.
-// (Advanced B 의 "초기 중복 요청 없음"이 성립하려면 prefetch 데이터가 클라에서 fresh 여야 한다)
-const DEFAULT_STALE_TIME = 60 * 1000;
-
 export function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: DEFAULT_STALE_TIME,
         // true 면 렌더 중 에러를 throw 한다(→ 가장 가까운 에러 경계에 잡힘). retry 를 다 쓰고도 실패한
         // 최종 시점에 평가된다. 보여줄 자기 데이터가 없을 때(첫 로드 실패)만 throw 한다. 이미 목록을 보던 중
         // background refetch 가 실패하면(data 존재) throw 하지 않는다 — throw 하면 멀쩡히 보던 목록이
