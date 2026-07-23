@@ -19,6 +19,7 @@ import { ProductList } from "./ProductList";
 import { useCommerceStore } from "@/stores/commerceStore";
 import { makeQueryClient } from "@/lib/queryClient";
 import { resolveProductListQuery } from "@/hooks/productListSearchParams";
+import { normalizeProductListQuery } from "@/utils/productList";
 import { productQueries } from "@/queries/products";
 import { getProducts } from "@/services/commerce";
 import type { Product, ProductListResponse } from "@/types/commerce";
@@ -132,14 +133,17 @@ describe("nuqs URL 조건과 TanStack Query query key 의 일치", () => {
       </QueryClientProvider>,
     );
 
-    // URL 을 파싱·정규화한 조건. 요청 인자와 queryKey 가 둘 다 이 하나를 가리켜야 "URL=보이는 목록"이 성립한다.
-    const expectedCondition = {
+    // 이 테스트의 URL 조건(위 searchParams 와 동일). resolve 로 page 하한만 방어한 상태.
+    const urlCondition = resolveProductListQuery({
       q: "",
       category: "home",
       sort: "price-asc",
       page: 2,
-      pageSize: 12,
-    };
+    });
+
+    // 하드코딩 대신 실제 정규화 함수로 도출해 스키마가 바뀌어도 어긋나지 않게 한다.
+    // 요청 인자와 queryKey 가 둘 다 이 하나를 가리켜야 "URL=보이는 목록"이 성립한다.
+    const expectedCondition = normalizeProductListQuery(urlCondition);
 
     // (1) URL 조건 그대로 getProducts 가 불린다.
     await waitFor(() =>
@@ -147,14 +151,7 @@ describe("nuqs URL 조건과 TanStack Query query key 의 일치", () => {
     );
 
     // (2) 그 조건이 productQueries.list(URL 조건).queryKey 와 같은 조건을 가리킨다.
-    const { queryKey } = productQueries.list(
-      resolveProductListQuery({
-        q: "",
-        category: "home",
-        sort: "price-asc",
-        page: 2,
-      }),
-    );
+    const { queryKey } = productQueries.list(urlCondition);
     expect(queryKey).toEqual([...productQueries.lists(), expectedCondition]);
   });
 });
