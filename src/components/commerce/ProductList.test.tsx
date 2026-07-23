@@ -137,4 +137,26 @@ describe("ProductList", () => {
     resolvePage2(makeResponse(2, [makeProduct("p13", "2페이지상품")]));
     expect(await screen.findByText("2페이지상품")).toBeTruthy();
   });
+
+  test("현재 페이지가 정착하면 다음 페이지를 미리 prefetch 한다", async () => {
+    // page 번호를 상품명에 담아 어느 페이지 요청인지 구분한다.
+    getProductsMock.mockImplementation((query) => {
+      const page = query.page ?? 1;
+
+      return Promise.resolve(
+        makeResponse(page, [makeProduct(`p-${page}`, `${page}페이지상품`)]),
+      );
+    });
+
+    renderList("?page=1");
+    expect(await screen.findByText("1페이지상품")).toBeTruthy();
+
+    // "다음"을 누르지 않아도, page 1 정착 직후 prefetch useEffect 가 page+1(=2)을 요청한다.
+    // (page 1 에서 page 2 요청이 나올 경로는 이 prefetch 뿐이다.)
+    await waitFor(() =>
+      expect(
+        getProductsMock.mock.calls.some((call) => call[0].page === 2),
+      ).toBe(true),
+    );
+  });
 });
