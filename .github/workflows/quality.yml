@@ -79,11 +79,8 @@ jobs:
     # build 와 E2E 서버가 실제로 읽는 값이다. 검증 대상이기도 하므로 job 전체에 준다.
     # 나머지 두 job 은 빌드를 안 해서 필요 없다.
     env:
-      # 3단계 자가 검증용으로 일부러 깨뜨린 값이다. 머지하지 않는다.
-      # 1) 절대 URL 이 아니다  2) 비밀값 이름에 NEXT_PUBLIC_ 이 붙었다
-      APP_ORIGIN: not-a-url
+      APP_ORIGIN: ${{ secrets.APP_ORIGIN }}
       AUTH_SESSION_SECRET: ${{ secrets.AUTH_SESSION_SECRET }}
-      NEXT_PUBLIC_AUTH_SESSION_SECRET: ${{ secrets.AUTH_SESSION_SECRET }}
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
