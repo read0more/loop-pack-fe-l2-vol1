@@ -5,6 +5,7 @@ import { HeroSkeleton } from "@/examples/week-07-performance/HeroSkeleton";
 import app from "@/_app/styles/app.module.css";
 import layout from "@/shared/ui/layout.module.css";
 
+// 10주차 2단계 조건부 실행 자가 검증용 변경. 이 브랜치는 머지하지 않는다.
 export const generateMetadata = generateHomeMetadata;
 
 export default function HomePage() {
